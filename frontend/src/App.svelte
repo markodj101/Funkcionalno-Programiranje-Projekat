@@ -2,7 +2,7 @@
   import { RotateCcw } from "lucide-svelte";
   import './app.css';
 
-  // --- TIPOVI ---
+
   interface Memory {
     [key: string]: number; 
   }
@@ -18,13 +18,13 @@
     error?: string; 
   }
 
-  // --- STATE ---
+
   let inputValue: string = "";
   let memoryInput: string = "";
   let statusMessage = "Ready";
   let currentPC = 0;
   
-  // Ispravljen typo: playbackTimer
+  
   let playbackTimer: any = null;
   
   let logs: ExecutionStep[] = [];
@@ -32,7 +32,7 @@
   let delta: number = 500;
   let isDragging = false;
 
-  // --- LOGIKA ---
+ 
 
   async function sendToHaskell() {
     if (!inputValue) return;
@@ -44,7 +44,7 @@
       const res = await fetch("http://localhost:3000/api/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // POPRAVLJENO: Ključevi moraju odgovarati Haskellu (sourceCode, initialMemory)
+        
         body: JSON.stringify({ 
             sourceCode: inputValue, 
             initialMemory: memoryInput
@@ -71,7 +71,7 @@
 
   function animateExecution(steps: ExecutionStep[]){
     let index = 0;
-    // POPRAVLJENO: Koristimo backticks (`) za interpolaciju varijable
+    
     statusMessage = `Running (${steps.length} steps)...`;
 
     if (playbackTimer) clearInterval(playbackTimer);
@@ -85,12 +85,12 @@
 
       const step = steps[index];
 
-      // Ažuriranje stanja
+     
       logs = [...logs, step];
       runtimeMemory = step.memorySnapshot;
       currentPC = step.pc;
 
-      // Auto-scroll konzole
+      
       const consoleDiv = document.getElementById("console-output");
       if (consoleDiv) consoleDiv.scrollTop = consoleDiv.scrollHeight;
 
@@ -106,7 +106,7 @@
     statusMessage = "Ready";
   }
 
-  // --- DRAG & DROP ---
+
   function handleDrop(event: DragEvent){
     event.preventDefault();
     isDragging = false;
@@ -133,18 +133,18 @@
   }
 </script>
 
-<!-- HTML DIZAJN -->
+
 <main class="min-h-screen flex flex-col h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans">
   
-  <!-- HEADER -->
+  
   <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shrink-0">
     <div class="w-full max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <p class="text-2xl font-bold leading-tight text-blue-600 dark:text-blue-400">Recursive Haskell Assembler</p>
+        <p class="text-2xl font-bold leading-tight ">Recursive Haskell Assembler</p>
       </div>
 
       <div class="flex items-center gap-4">
-        <!-- Slider -->
+        
         <div class="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full border border-gray-200 dark:border-gray-600">
           <span class="text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Delay:</span>
           <input
@@ -155,7 +155,7 @@
           <span class="text-xs font-bold text-gray-700 dark:text-gray-100 w-12 text-right">{delta} ms</span>
         </div>
 
-        <!-- Buttons -->
+        
         <button on:click={sendToHaskell} class="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-md transition-all active:scale-95 font-semibold">
           Run
         </button>
@@ -167,13 +167,13 @@
     </div>
   </header>
 
-  <!-- MAIN CONTENT -->
+  
   <section class="flex-1 w-full max-w-6xl mx-auto p-4 overflow-hidden h-full">
     <div class="flex gap-4 h-full">
     
-      <!-- LEFT COLUMN -->
+    
       <div class="w-1/3 flex flex-col gap-4 h-full">
-        <!-- Code Input -->
+       
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div 
           class="flex-1 bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-700 flex flex-col shadow-sm relative overflow-hidden group"
@@ -202,7 +202,7 @@
           ></textarea>
         </div>
 
-        <!-- Memory Input -->
+        
         <div class="h-1/3 bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-700 flex flex-col shadow-sm overflow-hidden">
           <div class="p-3 border-b border-gray-200 dark:border-gray-700 font-bold uppercase text-xs text-gray-500 bg-gray-50 dark:bg-gray-800">
              Initial Memory
@@ -216,10 +216,10 @@
         </div>
       </div>
 
-      <!-- RIGHT COLUMN -->
+     
       <div class="flex-1 flex flex-col gap-4 h-full">
         
-        <!-- Runtime Memory Grid -->
+        
         <div class="h-1/3 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-xl border shadow-sm relative overflow-hidden flex flex-col">
           <div class="p-3 border-b border-gray-200 dark:border-gray-700 font-bold uppercase text-xs text-gray-500 flex justify-between bg-gray-50 dark:bg-gray-800 items-center">
              <span>Runtime Memory State</span>
@@ -230,7 +230,7 @@
             {#if Object.keys(runtimeMemory).length === 0}
               <div class="h-full flex items-center justify-center text-gray-400 italic text-sm">Memory is empty.</div>
             {:else}
-              <!-- POPRAVLJENO: grid-cols-4 umjesto gird-cols-4 -->
+             
               <div class="grid grid-cols-4 gap-3">
                 {#each Object.entries(runtimeMemory) as [key, value]}
                   <div class="flex flex-col items-center p-2 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600 shadow-sm">
@@ -243,7 +243,7 @@
           </div>
         </div>
 
-        <!-- Terminal / Console -->
+        
         <div class="flex-1 bg-[#0d1117] rounded-xl border border-gray-700 shadow-lg flex flex-col overflow-hidden">
           <div class="px-4 py-2 border-b border-gray-800 bg-gray-800/50 flex justify-between items-center">
               <span class="text-xs font-bold text-orange-400 uppercase tracking-wider">Terminal Trace</span>
